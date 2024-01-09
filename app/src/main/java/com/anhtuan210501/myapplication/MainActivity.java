@@ -25,6 +25,7 @@ import android.webkit.PermissionRequest;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final String TAG = "DijkstraAlgorithm";
     GoogleMap map;
+    TextView txt_signal;
     test a = new test();
     boolean isPermissionsGranted;
     private DatabaseReference myRef;
@@ -102,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             check_circle=0, cut=0, cut_save=0, reverse=0, lock_check=0, check_route=0, check_change=0;
     private double lat_location=0, lng_location=0, lat_des=10.851201963938433, lng_des=106.77314478904007, total_dis=0;
     Switch lock, change, update;
+    socket socketAsyncTask;
+    private int check_signal=0;
 
 
     @Override
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         update = findViewById(R.id.switch_test);
         change = findViewById(R.id.switch_test2);
         lock = findViewById(R.id.switch_lock);
+        txt_signal = findViewById(R.id.textViewSignal);
         path_backup = new ArrayList<>();
         cut_node_save = new ArrayList<>();
         path_cut_save = new ArrayList<>();
@@ -214,14 +219,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //start và end
         // Tạo các đối tượng Node và thêm vào danh sách các đỉnh
         Node node1 = new Node(new LatLng(10.851422, 106.771340), 1);//addMarker(10.851422, 106.771340);
-        Node node2 = new Node(new LatLng(10.853683, 106.771619), 2);//addMarker(10.853683, 106.771619);
-        Node node3 = new Node(new LatLng(10.853561, 106.772527), 3);//addMarker(10.853561, 106.772527);
-        Node node4 = new Node(new LatLng(10.853313, 106.772594), 4);//addMarker(10.853313, 106.772594);
-        Node node5 = new Node(new LatLng(10.853242, 106.772889), 5);//addMarker(10.853242, 106.772889);
-        Node node6 = new Node(new LatLng(10.852822681565097, 106.77284874022007), 6);//addMarker(10.852832, 106.772851);
+        Node node2 = new Node(new LatLng(10.85365312307116, 106.77158240228891), 2);//addMarker(10.853683, 106.771619);
+        Node node3 = new Node(new LatLng(10.853548083214337, 106.77254799753428), 3);//addMarker(10.853561, 106.772527);
+        Node node4 = new Node(new LatLng(10.853272806173006, 106.77257716655731), 4);//addMarker(10.853313, 106.772594);
+        Node node5 = new Node(new LatLng(10.853241195396045, 106.772901378572), 5);//addMarker(10.853242, 106.772889);
+        Node node6 = new Node(new LatLng(10.852814449579858, 106.77287891507149), 6);//addMarker(10.852832, 106.772851);
         Node node7 = new Node(new LatLng(10.852744642333589, 106.77343882620335), 7);//addMarker(10.852743, 106.773430);
-        Node node8 = new Node(new LatLng(10.852364324281616, 106.77279576659203), 8);//addMarker(10.852366, 106.772798);
-        Node node9 = new Node(new LatLng(10.852266198852275, 106.77338853478432), 9);//addMarker(10.852277, 106.773382);
+        Node node8 = new Node(new LatLng(10.852360372922663, 106.77279811352491), 8);//addMarker(10.852366, 106.772798);
+        Node node9 = new Node(new LatLng(10.852259613251832, 106.77340529859065), 9);//addMarker(10.852277, 106.773382);
         Node node10 = new Node(new LatLng(10.851257283173354, 106.7726569622755), 10);//addMarker(10.851249, 106.772658);
         Node node11 = new Node(new LatLng(10.85117628000445, 106.77329029887915), 11);//addMarker(10.851182, 106.773321);
         Node node12 = new Node(new LatLng(10.850132, 106.773216), 12);//addMarker(10.850132, 106.773216);
@@ -609,10 +614,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         String turnSignal;
-        if (angleDiff > 60) {
+        if (angleDiff > 55) {
             turnSignal = "Turn left";
             a = 1;
-        } else if (angleDiff < -60) {
+        } else if (angleDiff < -55) {
             turnSignal = "Turn right";
             a = 2;
         } else {
@@ -701,7 +706,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void checkGPS() {
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(2000);
+        locationRequest.setInterval(1000);
         locationRequest.setFastestInterval(500);
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
@@ -874,7 +879,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (instruction_list.size()>1){
                         check_circle =1;
                         for (int i = 1; i < (instruction_list.size()-1); i++){
-                            addCircle(path2.get(i+1).getLocation(),17);
+                            addCircle(path2.get(i+1).getLocation(),20);
                         }
                         addCircle(path2.get(instruction_list.size()).getLocation(),12);
                     }
@@ -891,7 +896,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (instruction_list.size()>1){
                         check_circle =1;
                         for (int i = 1; i < (instruction_list.size()-1); i++){
-                            addCircle(path2.get(i+1).getLocation(),17);
+                            addCircle(path2.get(i+1).getLocation(),20);
                         }
                         addCircle(path2.get(instruction_list.size()).getLocation(),12);
                     }
@@ -902,25 +907,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             for (int i = 1; i < (instruction_list.size()-1); i++){
                 float distance_check = distance(lat_location, lng_location,
                         path2.get(2).getLocation().latitude, path2.get(2).getLocation().longitude);
-                System.out.println("distance: " + distance_check);
+                System.out.println("check_signal: " + check_signal);
+                System.out.println("distance_check: " + distance_check);
                 if (instruction_list.size()>2){
-                    int signal = signal(path2.get(1).getLocation().latitude, path2.get(1).getLocation().longitude,
+                    System.out.println("instruction_list: " + instruction_list.size());
+                    int signal_check = signal(path2.get(1).getLocation().latitude, path2.get(1).getLocation().longitude,
                             path2.get(2).getLocation().latitude,path2.get(2).getLocation().longitude,
                             path2.get(3).getLocation().latitude,path2.get(3).getLocation().longitude);
-                    if (distance_check<18){
-                        if (signal==1){
+                    if (distance_check>25){check_signal=0;}
+                    if (distance_check<25 && check_signal==0){
+                        if (signal_check==1){
                             myRef.child("/warning_python").setValue("" + "Turn Left");
-                            Toast.makeText(this, "Turn Left", Toast.LENGTH_SHORT).show();
-                        }else if (signal==2){
+                            txt_signal.setText("Turn Left");
+                            socketAsyncTask = new socket("192.168.119.248", 5000, "Turn left");
+                            socketAsyncTask.execute();
+                            check_signal=1;
+                        }else if (signal_check==2){
                             myRef.child("/warning_python").setValue("" + "Turn Right");
-                            Toast.makeText(this, "Turn Right", Toast.LENGTH_SHORT).show();
+                            txt_signal.setText("Turn Right");
+                            socketAsyncTask = new socket("192.168.119.248", 5000, "Turn Right");
+                            socketAsyncTask.execute();
+                            check_signal=1;
                         }else {
                             myRef.child("/warning_python").setValue("" + "Keep Straight");
-                            Toast.makeText(this, "Keep Straight", Toast.LENGTH_SHORT).show();
+                            txt_signal.setText("Keep Straight");
+                            socketAsyncTask = new socket("192.168.119.248", 5000, "Keep Straight");
+                            socketAsyncTask.execute();
                         }
-                    }else{
-                        myRef.child("/warning_python").setValue("" + "Keep Straight");
-                        Toast.makeText(this, "Keep Straight", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        if (check_signal==0) {
+                            myRef.child("/warning_python").setValue("" + "Keep Straight");
+                            txt_signal.setText("Keep Straight");
+                            socketAsyncTask = new socket("192.168.119.248", 5000, "Keep Straight");
+                            socketAsyncTask.execute();
+                        }
                     }
                 }
             }
@@ -928,12 +949,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             float distance_check = distance(lat_location, lng_location,
                     path2.get(2).getLocation().latitude, path2.get(2).getLocation().longitude);
             System.out.println("alo alo" + distance_check);
+            myRef.child("/warning_python").setValue("" + "Keep Straight");
+            txt_signal.setText("Keep Straight");
+            socketAsyncTask = new socket("192.168.119.248", 5000, "Keep Straight");
+            socketAsyncTask.execute();
             if(distance_check<13){
                 check = 0;
                 update.setChecked(false);
                 myRef.child("/warning_python").setValue("Finish");
+                txt_signal.setText("Finish");
+                socketAsyncTask = new socket("192.168.119.248", 5000, "Finish");
+                socketAsyncTask.execute();
                 finish_alert();
             }
+        }else{
+            System.out.println("alo alo2");
+            myRef.child("/warning_python").setValue("" + "Keep Straight");
+            txt_signal.setText("Keep Straight");
+            socketAsyncTask = new socket("192.168.119.248", 5000, "Keep Straight");
+            socketAsyncTask.execute();
         }
     }
     @Override

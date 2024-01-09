@@ -41,11 +41,22 @@
         android:id="@+id/switch_lock"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="350dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:background="#3D7DDC"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_test" />
+        app:layout_constraintStart_toEndOf="@+id/switch_test"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSignal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:hint="Signal"
+        android:textSize="35dp"
+        app:layout_constraintStart_toEndOf="@+id/switch_lock"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
